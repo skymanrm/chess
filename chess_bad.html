@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Chess</title>
+	<script type="text/javascript" src="jquery-1.5.1.min.js"></script>
+	<script type="text/javascript" src="main.js"></script>
+	<script type="text/javascript" src="moves.js"></script>
+	<style type="text/css">
+		td {
+			text-align: center;
+		}
+		td img, .figures img {
+			cursor: pointer;
+			z-index: 10;
+		}
+		#crsr {
+			position: absolute;
+			z-index: 100;
+		}
+		.cols {
+			width: 100px;
+			height: 100px;
+			padding: 0px;
+		}
+		.cols:hover {
+			width: 92px;
+			height: 92px;
+			border: 4px solid #d7d7d7;
+		}
+		.avmove {
+			border: 4px dashed red;
+			height: 92px;
+			width: 92px;
+		}
+		.figures {
+			width: 620px;
+			height: 70px;
+			border: 2px solid #808080;
+			padding: 10px 50px 5px 100px;
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div id="crsr"></div>
+	<table cellpadding="0" cellspacing="0">
+		<tr class="rows" id="r8">
+			<td class="cols" id="c81"></td>
+			<td class="cols" id="c82"></td>
+			<td class="cols" id="c83"></td>
+			<td class="cols" id="c84"></td>
+			<td class="cols" id="c85"></td>
+			<td class="cols" id="c86"></td>
+			<td class="cols" id="c87"></td>
+			<td class="cols" id="c88"></td>
+		</tr>
+		<tr class="rows" id="r7">
+			<td class="cols" id="c71"></td>
+			<td class="cols" id="c72"></td>
+			<td class="cols" id="c73"></td>
+			<td class="cols" id="c74"></td>
+			<td class="cols" id="c75"></td>
+			<td class="cols" id="c76"></td>
+			<td class="cols" id="c77"></td>
+			<td class="cols" id="c78"></td>
+		</tr>
+		<tr class="rows" id="r6">
+			<td class="cols" id="c61"></td>
+			<td class="cols" id="c62"></td>
+			<td class="cols" id="c63"></td>
+			<td class="cols" id="c64"></td>
+			<td class="cols" id="c65"></td>
+			<td class="cols" id="c66"></td>
+			<td class="cols" id="c67"></td>
+			<td class="cols" id="c68"></td>
+		</tr>
+		<tr class="rows" id="r5">
+			<td class="cols" id="c51"></td>
+			<td class="cols" id="c52"></td>
+			<td class="cols" id="c53"></td>
+			<td class="cols" id="c54"></td>
+			<td class="cols" id="c55"></td>
+			<td class="cols" id="c56"></td>
+			<td class="cols" id="c57"></td>
+			<td class="cols" id="c58"></td>
+		</tr>
+		<tr class="rows" id="r4">
+			<td class="cols" id="c41"></td>
+			<td class="cols" id="c42"></td>
+			<td class="cols" id="c43"></td>
+			<td class="cols" id="c44"></td>
+			<td class="cols" id="c45"></td>
+			<td class="cols" id="c46"></td>
+			<td class="cols" id="c47"></td>
+			<td class="cols" id="c48"></td>
+		</tr>
+		<tr class="rows" id="r3">
+			<td class="cols" id="c31"></td>
+			<td class="cols" id="c32"></td>
+			<td class="cols" id="c33"></td>
+			<td class="cols" id="c34"></td>
+			<td class="cols" id="c35"></td>
+			<td class="cols" id="c36"></td>
+			<td class="cols" id="c37"></td>
+			<td class="cols" id="c38"></td>
+		</tr>
+		<tr class="rows" id="r2">
+			<td class="cols" id="c21"></td>
+			<td class="cols" id="c22"></td>
+			<td class="cols" id="c23"></td>
+			<td class="cols" id="c24"></td>
+			<td class="cols" id="c25"></td>
+			<td class="cols" id="c26"></td>
+			<td class="cols" id="c27"></td>
+			<td class="cols" id="c28"></td>
+		</tr>
+		<tr class="rows" id="r1">
+			<td class="cols" id="c11"></td>
+			<td class="cols" id="c12"></td>
+			<td class="cols" id="c13"></td>
+			<td class="cols" id="c14"></td>
+			<td class="cols" id="c15"></td>
+			<td class="cols" id="c16"></td>
+			<td class="cols" id="c17"></td>
+			<td class="cols" id="c18"></td>
+		</tr>
+	</table>
+	
+	<div style="position: absolute; left: 900px; top: 50px; height: 300px; width: 400px; border: 1px solid grey;" id="dropfig"><h3>Чтобы отпустить фигуру кликните в этот квадрат</h3></div>
+	<div style="position: absolute; left: 900px; top: 380px; height: 300px; width: 400px; border: 1px solid grey;" id="killed"><h3>Убитые фигуры</h3></div>
+	
+	<div style="position: absolute; left: 900px; top: 710px; height: 100px; width: 400px; border: 1px solid grey;"><h2 id="status">Расстановка фигур <a href="#" id="aut">расставить автоматически</a></h2></div>
+	
+	<div id="bf" class="figures">
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/1b.png" alt="" class="white" id="pawn"/>
+		<img src="images/2b.png" alt="" class="white" id="rook"/> 
+		<img src="images/2b.png" alt="" class="white" id="rook"/>
+		<img src="images/3b.png" alt="" class="white" id="horse"/>
+		<img src="images/3b.png" alt="" class="white" id="horse"/>
+		<img src="images/4b.png" alt="" class="white" id="elephant"/>
+		<img src="images/4b.png" alt="" class="white" id="elephant"/>
+		<img src="images/5b.png" alt="" class="white" id="queen"/>
+		<img src="images/6b.png" alt="" class="white" id="king"/> 
+	</div>
+	
+	<div id="wf" class="figures">
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/1c.png" alt="" class="black" id="pawn"/>
+		<img src="images/2c.png" alt="" class="black" id="rook"/> 
+		<img src="images/2c.png" alt="" class="black" id="rook"/>
+		<img src="images/3c.png" alt="" class="black" id="horse"/>
+		<img src="images/3c.png" alt="" class="black" id="horse"/>
+		<img src="images/4c.png" alt="" class="black" id="elephant"/>
+		<img src="images/4c.png" alt="" class="black" id="elephant"/>
+		<img src="images/5c.png" alt="" class="black" id="queen"/> 
+		<img src="images/6c.png" alt="" class="black" id="king"/>
+	</div>
+</body>
+</html>

@@ -18,6 +18,7 @@ var movesHistory = [];
 var isCheck = false;
 var defStart = false;
 var sideLength = 8;
+var i, j;
 
 
 function init () {    
@@ -122,7 +123,7 @@ function run() {
 
 
 
-var Figures = function () {
+var Figures = function () {   
     this.board = [
     [0,0,0,0,0,0,0,0], 
     [0,0,0,0,0,0,0,0], 
@@ -194,8 +195,8 @@ var Figures = function () {
     }
     
     this.toSimpleBoard = function(figure) {        
-        for (var i=0;i<sideLength;i++) {
-            for (var j=0;j<sideLength;j++) {
+        for (i=0;i<sideLength;i++) {
+            for (j=0;j<sideLength;j++) {
                 if (this.board[i][j] != 0) {
                     if 
                     (
@@ -224,8 +225,8 @@ var Figures = function () {
     
     this.draw = function() {
         $(".cell").html('');
-        for (var i=0;i<sideLength;i++) {
-            for (var j=0;j<sideLength;j++) {
+        for (i=0;i<sideLength;i++) {
+            for (j=0;j<sideLength;j++) {
                 if (this.board[i][j] != 0) {
                     var clas = "black";
                     if (isWhite(this.board[i][j])) {
@@ -287,8 +288,8 @@ var Board = function() {
     }
     
     this.clearAviableMoves = function() {
-        for (var i=0;i<sideLength;i++) {
-            for (var j=0;j<sideLength;j++) {
+        for (i=0;i<sideLength;i++) {
+            for (j=0;j<sideLength;j++) {
                 this.board[i][j] = 0;
             }
         }
@@ -354,16 +355,16 @@ var Board = function() {
                 
             case "ROOK":
                 // доступные ходы для ладья
-                for (var i=coordinates[1]*1-1;i>-1; i--) {
+                for (i=coordinates[1]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
                 }
-                for (var i=coordinates[1]*1+1;i<8; i++) {
+                for (i=coordinates[1]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
                 }
-                for (var i=coordinates[0]*1-1;i>-1; i--) {
+                for (i=coordinates[0]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
                 }
-                for (var i=coordinates[0]*1+1;i<8; i++) {
+                for (i=coordinates[0]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
                 }
                 break;
@@ -382,44 +383,44 @@ var Board = function() {
                 
             case "BISHOP":
                 // доступные ходы для слона
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {break}
                 }
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {break}
                 }
                 break;
                 
             case "QUEEN":
                 // доступные ходля для ферзя
-                for (var i=coordinates[1]*1-1;i>-1; i--) {
+                for (i=coordinates[1]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
                 }
-                for (var i=coordinates[1]*1+1;i<8; i++) {
+                for (i=coordinates[1]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
                 }
-                for (var i=coordinates[0]*1-1;i>-1; i--) {
+                for (i=coordinates[0]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
                 }
-                for (var i=coordinates[0]*1+1;i<8; i++) {
+                for (i=coordinates[0]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
                 }
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {break}
                 }
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<sideLength; i++) {
+                for (i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {break}
                 }
                 break;
@@ -442,8 +443,8 @@ var Board = function() {
     
     this.draw = function () {
         $(".cell").removeClass("aviableForMove").removeClass("aviableForAttack").droppable("disable");
-        for (var i=0;i<sideLength;i++) {
-            for (var j=0;j<sideLength;j++) {
+        for (i=0;i<sideLength;i++) {
+            for (j=0;j<sideLength;j++) {
                 if (this.board[i][j] == 1) {
                     $("#cell" + i.toString()+j.toString()).addClass("aviableForMove");
                 } else if (this.board[i][j] == 2) {
@@ -460,6 +461,10 @@ var Status = function() {
     this.setText = function(text) {
         $("#status").html(text);
     }
+}
+
+var Cemetery = function() {
+    
 }
 
 function switchSide() {
@@ -479,8 +484,8 @@ function switchSide() {
 function check(figures, board) {
     if (!whiteTurn) {
         // шах черным
-        for (var i=0;i<sideLength;i++) {
-            for (var j=0;j<sideLength;j++) {
+        for (i=0;i<sideLength;i++) {
+            for (j=0;j<sideLength;j++) {
                 if (figures.board[i][j] != 0 && (figures.board[i][j].indexOf("N") != -1 || figures.board[i][j].indexOf("O") != -1)) {
                     board.showAviableMoves([i, j], figures);
                 }
@@ -495,8 +500,8 @@ function check(figures, board) {
         }        
     } else {
         // шах белым
-        for (var i=0;i<sideLength;i++) {
-            for (var j=0;j<sideLength;j++) {
+        for (i=0;i<sideLength;i++) {
+            for (j=0;j<sideLength;j++) {
                 if (figures.board[i][j] != 0 && (figures.board[i][j].indexOf("n") != -1 || figures.board[i][j].indexOf("o") != -1)) {
                     board.showAviableMoves([i, j], figures);
                 }
@@ -514,9 +519,9 @@ function check(figures, board) {
 }
 
 function defaultPositions(figures) {    
-    for (var i=0; i<2; i++) {
-        for (var j=0;j<8;j++) {
-            var i2 = i==0 ? 1 : 6;
+    for (i=0; i<2; i++) {
+        for (j=0;j<8;j++) {
+            i2 = i==0 ? 1 : 6;
             var pawn = i==0 ? "pawn" : "PAWN";
             figures.board[i2][j] = pawn;
         }

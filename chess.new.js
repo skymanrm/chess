@@ -17,6 +17,7 @@ var imagesSrc = {
 var movesHistory = [];
 var isCheck = false;
 var defStart = false;
+var sideLength = 8;
 
 
 function init () {    
@@ -47,7 +48,7 @@ function init () {
 }
 
 function run() {
-    if ($("#figuresBoxes>.figures[piece=king]").length > 0 || $("#figuresBoxes>.figures[piece=KING]").length > 0) {
+    if ($("#figuresBoxes>.figure[piece=king]").length > 0 || $("#figuresBoxes>.figure[piece=KING]").length > 0) {
         alert("Оба короля должны быть на доске");
         return false;
     }
@@ -91,9 +92,9 @@ function run() {
     $(".aviableForMove,.aviableForAttack").live("drop", function(e,ui) {
         var parent = $(ui.draggable).parent(); // FIX
         // предварительная проверка на отсутсвие шаха перед ходом
-        var figures2 = clone(figures); // копируем фигуры
+        var figures2 = $.extend(true, {}, figures); // копируем фигуры
         board.clearAviableMoves();
-        var board2 = clone(board); // копируем еще че то
+        var board2 = $.extend(true, {}, board); // копируем фигуры
         figures2.moveFigure(ui.draggable, this, parent); // имитируем ход
         check(figures2, board2); // проверяем шах имитируемого хода
         $(".cell").html("");
@@ -193,8 +194,8 @@ var Figures = function () {
     }
     
     this.toSimpleBoard = function(figure) {        
-        for (var i=0;i<8;i++) {
-            for (var j=0;j<8;j++) {
+        for (var i=0;i<sideLength;i++) {
+            for (var j=0;j<sideLength;j++) {
                 if (this.board[i][j] != 0) {
                     if 
                     (
@@ -223,8 +224,8 @@ var Figures = function () {
     
     this.draw = function() {
         $(".cell").html('');
-        for (var i=0;i<8;i++) {
-            for (var j=0;j<8;j++) {
+        for (var i=0;i<sideLength;i++) {
+            for (var j=0;j<sideLength;j++) {
                 if (this.board[i][j] != 0) {
                     var clas = "black";
                     if (isWhite(this.board[i][j])) {
@@ -286,8 +287,8 @@ var Board = function() {
     }
     
     this.clearAviableMoves = function() {
-        for (var i=0;i<8;i++) {
-            for (var j=0;j<8;j++) {
+        for (var i=0;i<sideLength;i++) {
+            for (var j=0;j<sideLength;j++) {
                 this.board[i][j] = 0;
             }
         }
@@ -381,16 +382,16 @@ var Board = function() {
                 
             case "BISHOP":
                 // доступные ходы для слона
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {break}
                 }
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {break}
                 }
                 break;
@@ -409,16 +410,16 @@ var Board = function() {
                 for (var i=coordinates[0]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
                 }
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {break}
                 }
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {break}
                 }
-                for (var i=1;i<8; i++) {
+                for (var i=1;i<sideLength; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {break}
                 }
                 break;
@@ -441,8 +442,8 @@ var Board = function() {
     
     this.draw = function () {
         $(".cell").removeClass("aviableForMove").removeClass("aviableForAttack").droppable("disable");
-        for (var i=0;i<8;i++) {
-            for (var j=0;j<8;j++) {
+        for (var i=0;i<sideLength;i++) {
+            for (var j=0;j<sideLength;j++) {
                 if (this.board[i][j] == 1) {
                     $("#cell" + i.toString()+j.toString()).addClass("aviableForMove");
                 } else if (this.board[i][j] == 2) {
@@ -478,8 +479,8 @@ function switchSide() {
 function check(figures, board) {
     if (!whiteTurn) {
         // шах черным
-        for (var i=0;i<8;i++) {
-            for (var j=0;j<8;j++) {
+        for (var i=0;i<sideLength;i++) {
+            for (var j=0;j<sideLength;j++) {
                 if (figures.board[i][j] != 0 && (figures.board[i][j].indexOf("N") != -1 || figures.board[i][j].indexOf("O") != -1)) {
                     board.showAviableMoves([i, j], figures);
                 }
@@ -494,8 +495,8 @@ function check(figures, board) {
         }        
     } else {
         // шах белым
-        for (var i=0;i<8;i++) {
-            for (var j=0;j<8;j++) {
+        for (var i=0;i<sideLength;i++) {
+            for (var j=0;j<sideLength;j++) {
                 if (figures.board[i][j] != 0 && (figures.board[i][j].indexOf("n") != -1 || figures.board[i][j].indexOf("o") != -1)) {
                     board.showAviableMoves([i, j], figures);
                 }
@@ -512,27 +513,7 @@ function check(figures, board) {
     board.clearAviableMoves();
 }
 
-function clone(o) {
-    if(!o || 'object' !== typeof o)  {
-        return o;
-    }
-    var c = 'function' === typeof o.pop ? [] : {};
-    var p, v;
-    for(p in o) {
-        if(o.hasOwnProperty(p)) {
-            v = o[p];
-            if(v && 'object' === typeof v) {
-                c[p] = clone(v);
-            }
-            else {
-                c[p] = v;
-            }
-        }
-    }
-    return c;
-}
-
-function defaultPositions(figures) {
+function defaultPositions(figures) {    
     for (var i=0; i<2; i++) {
         for (var j=0;j<8;j++) {
             var i2 = i==0 ? 1 : 6;

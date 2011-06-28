@@ -1,4 +1,3 @@
-var inGame = false;
 var whiteTurn = true;
 var imagesSrc = {
     "PAWN": "images/1b.png",
@@ -16,9 +15,6 @@ var imagesSrc = {
 };
 var movesHistory = [];
 var isCheck = false;
-var defStart = false;
-var sideLength = 8;
-var i, j;
 
 
 function init () {    
@@ -44,7 +40,6 @@ function init () {
 }
 
 function run() {   
-    inGame = true;
     movesHistory.push(figures.board); // запись в историю ходов
     figures.draw();
     board = new Board();
@@ -156,10 +151,8 @@ var Figures = function () {
             $(".figure").draggable("disable");
             // если в этой клетке уже была фигура
             if ($(toDom).children(".figure").length > 0) {
-                if (inGame) {
                     // фигура убита
                     cemetery.addPiece($(toDom).children(".figure").attr("alt"));
-                }
             }
             
             yx = $(toDom).attr("id");
@@ -174,8 +167,8 @@ var Figures = function () {
     }
     
     this.toSimpleBoard = function(figure) {        
-        for (i=0;i<sideLength;i++) {
-            for (j=0;j<sideLength;j++) {
+        for (var i=0;i<8;i++) {
+            for (var j=0;j<8;j++) {
                 if (this.board[i][j] != 0) {
                     if (
                         (isWhite(figure) && isWhite(this.board[i][j])) || 
@@ -203,29 +196,17 @@ var Figures = function () {
     
     this.draw = function() {
         $(".cell").html('');
-        for (i=0;i<sideLength;i++) {
-            for (j=0;j<sideLength;j++) {
+        for (var i=0;i<8;i++) {
+            for (var j=0;j<8;j++) {
                 if (this.board[i][j] != 0) {
-                    var clas = "black";
-                    if (isWhite(this.board[i][j])) {
-                        clas = "white"
-                    } 
-                    clas = clas + " figure ";
-                    var temp = "<img class='" + clas + "' src='"+ imagesSrc[this.board[i][j]]+"' alt='" + this.board[i][j] + "'/>";
+                    var f_class = isWhite(this.board[i][j]) ? "white figure" : "black figure";
+                    var temp = "<img class='" + f_class + "' src='"+ imagesSrc[this.board[i][j]]+"' alt='" + this.board[i][j] + "'/>";
                     $("#cell"+i.toString()+j.toString()).html(temp);
                 }
             }
         }
         
         $(".figure").draggable("destroy");        
-        if (!inGame) {
-            // делаем доступными для перетаскивания все фигуры на поле
-            $(".figure").draggable({
-                revert: "invalid"
-            });
-            // делаем доступными все свободные клетки на поле
-            $(".cell").not($(".cell>.figure").parent()).droppable("enable");
-        } else {
             // активируем перетаскивание
             if (whiteTurn) {
                 $(".white").draggable({
@@ -237,7 +218,6 @@ var Figures = function () {
                     revert: "invalid"
                 });
             }
-        }
     }
 }
 
@@ -266,8 +246,8 @@ var Board = function() {
     }
     
     this.clearAviableMoves = function() {
-        for (i=0;i<sideLength;i++) {
-            for (j=0;j<sideLength;j++) {
+        for (var i=0;i<8;i++) {
+            for (var j=0;j<8;j++) {
                 this.board[i][j] = 0;
             }
         }
@@ -325,7 +305,7 @@ var Board = function() {
                 this.checkAviableMove([coordinates[0]*1+moveDirection,coordinates[1]-1], "attack", figures);
                 this.checkAviableMove([coordinates[0]*1+moveDirection,coordinates[1]*1+1], "attack", figures);
                 
-                if (defStart && (coordinates[0]*1 < 2 || coordinates[0]*1 > 5) && this.checkAviableMove([coordinates[0]*1+moveDirection,coordinates[1]], "move", figures)) {
+                if ((coordinates[0]*1 < 2 || coordinates[0]*1 > 5) && this.checkAviableMove([coordinates[0]*1+moveDirection,coordinates[1]], "move", figures)) {
                     this.checkAviableMove([coordinates[0]*1+moveDirection*2,coordinates[1]], "move", figures);
                 }
                 
@@ -333,22 +313,22 @@ var Board = function() {
                 
             case "ROOK":
                 // доступные ходы для ладья
-                for (i=coordinates[1]*1-1;i>-1; i--) {
+                for (var i=coordinates[1]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
                         break
                     }
                 }
-                for (i=coordinates[1]*1+1;i<8; i++) {
+                for (var i=coordinates[1]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
                         break
                     }
                 }
-                for (i=coordinates[0]*1-1;i>-1; i--) {
+                for (var i=coordinates[0]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
                         break
                     }
                 }
-                for (i=coordinates[0]*1+1;i<8; i++) {
+                for (var i=coordinates[0]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
                         break
                     }
@@ -369,22 +349,22 @@ var Board = function() {
                 
             case "BISHOP":
                 // доступные ходы для слона
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {
                         break
                     }
                 }
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {
                         break
                     }
                 }
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {
                         break
                     }
                 }
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {
                         break
                     }
@@ -393,42 +373,42 @@ var Board = function() {
                 
             case "QUEEN":
                 // доступные ходля для ферзя
-                for (i=coordinates[1]*1-1;i>-1; i--) {
+                for (var i=coordinates[1]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
                         break
                     }
                 }
-                for (i=coordinates[1]*1+1;i<8; i++) {
+                for (var i=coordinates[1]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
                         break
                     }
                 }
-                for (i=coordinates[0]*1-1;i>-1; i--) {
+                for (var i=coordinates[0]*1-1;i>-1; i--) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
                         break
                     }
                 }
-                for (i=coordinates[0]*1+1;i<8; i++) {
+                for (var i=coordinates[0]*1+1;i<8; i++) {
                     if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
                         break
                     }
                 }
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {
                         break
                     }
                 }
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {
                         break
                     }
                 }
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {
                         break
                     }
                 }
-                for (i=1;i<sideLength; i++) {
+                for (var i=1;i<8; i++) {
                     if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {
                         break
                     }
@@ -453,8 +433,8 @@ var Board = function() {
     
     this.draw = function () {
         $(".cell").removeClass("aviableForMove").removeClass("aviableForAttack").droppable("disable");
-        for (i=0;i<sideLength;i++) {
-            for (j=0;j<sideLength;j++) {
+        for (var i=0;i<8;i++) {
+            for (var j=0;j<8;j++) {
                 if (this.board[i][j] == 1) {
                     $("#cell" + i.toString()+j.toString()).addClass("aviableForMove");
                 } else if (this.board[i][j] == 2) {
@@ -482,7 +462,7 @@ var Cemetery = function() {
     
     this.draw = function() {
         $(".killed").html("");
-        for (i=0; i<this.pieces.length; i++) {
+        for (var i=0; i<this.pieces.length; i++) {
             $(".killed").append("<img src='" + imagesSrc[this.pieces[i]] + "' class='figure black' />");
         }
     }
@@ -505,8 +485,8 @@ function switchSide() {
 function check(figures, board) {
     if (!whiteTurn) {
         // шах черным
-        for (i=0;i<sideLength;i++) {
-            for (j=0;j<sideLength;j++) {
+        for (var i=0;i<8;i++) {
+            for (var j=0;j<8;j++) {
                 if (figures.board[i][j] != 0 && (figures.board[i][j].indexOf("N") != -1 || figures.board[i][j].indexOf("O") != -1)) {
                     board.showAviableMoves([i, j], figures);
                 }
@@ -521,8 +501,8 @@ function check(figures, board) {
         }        
     } else {
         // шах белым
-        for (i=0;i<sideLength;i++) {
-            for (j=0;j<sideLength;j++) {
+        for (var i=0;i<8;i++) {
+            for (var j=0;j<8;j++) {
                 if (figures.board[i][j] != 0 && (figures.board[i][j].indexOf("n") != -1 || figures.board[i][j].indexOf("o") != -1)) {
                     board.showAviableMoves([i, j], figures);
                 }
@@ -540,8 +520,8 @@ function check(figures, board) {
 }
 
 function defaultPositions(figures) {    
-    for (i=0; i<2; i++) {
-        for (j=0;j<8;j++) {
+    for (var i=0; i<2; i++) {
+        for (var j=0;j<8;j++) {
             i2 = i==0 ? 1 : 6;
             var pawn = i==0 ? "pawn" : "PAWN";
             figures.board[i2][j] = pawn;
@@ -566,6 +546,4 @@ function defaultPositions(figures) {
     figures.board[7][3] = "KING";
     
     $("#figuresBoxes").html("");
-    
-    defStart = true;
 }

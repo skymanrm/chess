@@ -24,6 +24,7 @@ var i, j;
 function init () {    
     figures = new Figures();
     info = new Status();
+    cemetery = new Cemetery();
     
     // перетаскивание фигур
     $(".figure").draggable({
@@ -38,41 +39,21 @@ function init () {
     
     figures.draw();
     
-    $("#run").click(function(){
-        run();
-    })
-    
-    $("#run2").click(function(){
-        defaultPositions(figures);
-        run();
-    })
+    defaultPositions(figures);
+    run();
 }
 
-function run() {
-    if ($("#figuresBoxes>.figure[alt=king]").length > 0 || $("#figuresBoxes>.figure[alt=KING]").length > 0) {
-        alert("Оба короля должны быть на доске");
-        return false;
-    }
-    
+function run() {   
     inGame = true;
     movesHistory.push(figures.board); // запись в историю ходов
     figures.draw();
     board = new Board();
     
-    info.setText("Игра запущена!<br />Ход белых");
     $('.cell,#figuresBoxes').droppable("destroy");
     $('.cell,#figuresBoxes').droppable({
         disabled: true
     });
     
-    $("#run,#run2").parent().remove();
-    $("#status").parent().animate({
-        top: "20"
-    });
-    $("#figuresBoxes").fadeOut("fast", function() {
-        $(".killed").fadeIn("fast");
-    });
-       
     // взяли фигуру
     $(".cell>.white,.cell>.black").live("dragstart", function(e,ui) {
         if ((whiteTurn && $(this).attr("class").indexOf("white") != -1) || (!whiteTurn && $(this).attr("class").indexOf("black") != -1)) {
@@ -110,7 +91,8 @@ function run() {
             figures.moveFigure(ui.draggable, this, parent);
             figures.draw();
             board.clearAviableMoves();
-            board.draw();        
+            board.draw();
+            cemetery.draw();
 
             check(figures, board); // проверяем шах
             movesHistory.push(figures.board); // запись в историю ходов
@@ -154,13 +136,13 @@ var Figures = function () {
     this.delFigure = function(coordinates) {
         this.board[coordinates[0]][coordinates[1]] = 0;
     };
+    
         
     // передвижение фигуры
-    this.moveFigure = function(figureDom, toDom, parent) {       
+    this.moveFigure = function(figureDom, toDom, parent) {
+        parent = parent == false ? $(figureDom).parent() : parent;
+        
         // удаляем фигуру с доски, если она на ней стояла
-        if (parent == false) {
-            parent = $(figureDom).parent();
-        } 
         if ($(parent).hasClass("cell")) {
             var yx = $(parent).attr("id");
             this.delFigure([yx.charAt(4), yx.charAt(5)]);
@@ -176,11 +158,8 @@ var Figures = function () {
             if ($(toDom).children(".figure").length > 0) {
                 if (inGame) {
                     // фигура убита
-                    $(".killed").append($(toDom).children(".figure").attr("style", "position: altative;"));                    
-                } else {
-                    // переносим в ящик с фигурами
-                    $("#figuresBoxes").append($(toDom).children(".figure").attr("style", "position: altative;"));
-                }                
+                    cemetery.addPiece($(toDom).children(".figure").attr("alt"));
+                }
             }
             
             yx = $(toDom).attr("id");
@@ -198,8 +177,7 @@ var Figures = function () {
         for (i=0;i<sideLength;i++) {
             for (j=0;j<sideLength;j++) {
                 if (this.board[i][j] != 0) {
-                    if 
-                    (
+                    if (
                         (isWhite(figure) && isWhite(this.board[i][j])) || 
                         (!isWhite(figure) && !isWhite(this.board[i][j]))
                         ) {
@@ -356,16 +334,24 @@ var Board = function() {
             case "ROOK":
                 // доступные ходы для ладья
                 for (i=coordinates[1]*1-1;i>-1; i--) {
-                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=coordinates[1]*1+1;i<8; i++) {
-                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=coordinates[0]*1-1;i>-1; i--) {
-                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
+                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=coordinates[0]*1+1;i<8; i++) {
-                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
+                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
+                        break
+                    }
                 }
                 break;
                 
@@ -384,44 +370,68 @@ var Board = function() {
             case "BISHOP":
                 // доступные ходы для слона
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {
+                        break
+                    }
                 }
                 break;
                 
             case "QUEEN":
                 // доступные ходля для ферзя
                 for (i=coordinates[1]*1-1;i>-1; i--) {
-                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=coordinates[1]*1+1;i<8; i++) {
-                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0],i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=coordinates[0]*1-1;i>-1; i--) {
-                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
+                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=coordinates[0]*1+1;i<8; i++) {
-                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {break}
+                    if (!this.checkAviableMove([i,coordinates[1]], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1-i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1-i,coordinates[1]*1+i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1-i], "both", figures)) {
+                        break
+                    }
                 }
                 for (i=1;i<sideLength; i++) {
-                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {break}
+                    if (!this.checkAviableMove([coordinates[0]*1+i,coordinates[1]*1+i], "both", figures)) {
+                        break
+                    }
                 }
                 break;
                 
@@ -464,7 +474,18 @@ var Status = function() {
 }
 
 var Cemetery = function() {
+    this.pieces = [];
     
+    this.addPiece = function(piece) {
+        this.pieces.push(piece);
+    }
+    
+    this.draw = function() {
+        $(".killed").html("");
+        for (i=0; i<this.pieces.length; i++) {
+            $(".killed").append("<img src='" + imagesSrc[this.pieces[i]] + "' class='figure black' />");
+        }
+    }
 }
 
 function switchSide() {
@@ -527,14 +548,22 @@ function defaultPositions(figures) {
         }
     }
     
-    figures.board[0][0] = "rook";figures.board[0][7] = "rook";
-    figures.board[7][0] = "ROOK";figures.board[7][7] = "ROOK";
-    figures.board[0][1] = "knight";figures.board[0][6] = "knight";
-    figures.board[7][1] = "KNIGHT";figures.board[7][6] = "KNIGHT";
-    figures.board[0][2] = "bishop";figures.board[0][5] = "bishop";
-    figures.board[7][2] = "BISHOP";figures.board[7][5] = "BISHOP";
-    figures.board[0][4] = "queen";figures.board[0][3] = "king";
-    figures.board[7][4] = "QUEEN";figures.board[7][3] = "KING";
+    figures.board[0][0] = "rook";
+    figures.board[0][7] = "rook";
+    figures.board[7][0] = "ROOK";
+    figures.board[7][7] = "ROOK";
+    figures.board[0][1] = "knight";
+    figures.board[0][6] = "knight";
+    figures.board[7][1] = "KNIGHT";
+    figures.board[7][6] = "KNIGHT";
+    figures.board[0][2] = "bishop";
+    figures.board[0][5] = "bishop";
+    figures.board[7][2] = "BISHOP";
+    figures.board[7][5] = "BISHOP";
+    figures.board[0][4] = "queen";
+    figures.board[0][3] = "king";
+    figures.board[7][4] = "QUEEN";
+    figures.board[7][3] = "KING";
     
     $("#figuresBoxes").html("");
     

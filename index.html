@@ -74,23 +74,17 @@
 
             .killed {
                 width: 650px;
-                height: 100px;
+                height: 60px;
                 margin: 20px auto;
                 -moz-box-shadow: 0px 0px 10px #D7D7D7;
                 -webkit-box-shadow: 0px 0px 10px #D7D7D7;
                 box-shadow: 0px 0px 10px #D7D7D7;
                 position: relative;
-                padding-left: 20px;
-                display: none;
-            }
-
-            .killed b {
-                position: absolute;
-                top: 23px;
-                left: 195px;
-                font-size: 36px;
-                color: #EFEFEF;
-                cursor: default;
+                padding: 10px;
+                background-image: url(images/cemetery_bg.png);
+                background-repeat: no-repeat;
+                background-position: center;
+                
             }
 
             .setings {
@@ -106,7 +100,7 @@
             .status {
                 position: absolute;
                 right: 10px; 
-                top: 60px; 
+                top: 20px; 
                 background: #D4D4D4; 
                 padding: 5px 15px; 
                 -moz-border-radius: 4px; 
@@ -277,51 +271,15 @@
             <div style="clear: both;"></div>
         </div>
 
-        <div class="killed"><b>убитые фигуры</b><br /></div>
+        <div class="killed"></div>
 
         <div class="setings"><b>Настройки</b><br />
             <a href="#" id="changecolor">Сменить цвета фигур</a>
         </div>
 
-        <div id="figuresBoxes">
-                <img src="images/1b.png" class="white figure" alt="PAWN" />
-                <img src="images/1b.png" class="white figure" alt="PAWN"/>
-                <img src="images/1b.png" class="white figure" alt="PAWN"/>
-                <img src="images/1b.png" class="white figure" alt="PAWN"/>
-                <img src="images/1b.png" class="white figure" alt="PAWN"/>
-                <img src="images/1b.png" class="white figure" alt="PAWN"/>
-                <img src="images/1b.png" class="white figure" alt="PAWN"/>
-                <img src="images/1b.png" class="white figure" alt="PAWN"/>
-                <img src="images/2b.png" class="white figure" alt="ROOK"/>
-                <img src="images/2b.png" class="white figure" alt="ROOK"/>
-                <img src="images/3b.png" class="white figure" alt="KNIGHT"/>
-                <img src="images/3b.png" class="white figure" alt="KNIGHT"/>
-                <img src="images/4b.png" class="white figure" alt="BISHOP"/>
-                <img src="images/4b.png" class="white figure" alt="BISHOP"/>
-                <img src="images/5b.png" class="white figure" alt="QUEEN"/>
-                <img src="images/6b.png" class="white figure" alt="KING"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/1c.png" class="black figure" alt="pawn"/>
-                <img src="images/2c.png" class="black figure" alt="pawn"/>
-                <img src="images/2c.png" class="black figure" alt="pawn"/>
-                <img src="images/3c.png" class="black figure" alt="knight"/>
-                <img src="images/3c.png" class="black figure" alt="knight"/>
-                <img src="images/4c.png" class="black figure" alt="bishop"/>
-                <img src="images/4c.png" class="black figure" alt="bishop"/>
-                <img src="images/5c.png" class="black figure" alt="queen"/>
-                <img src="images/6c.png" class="black figure" alt="king"/>			
-        </div>
+        <div id="figuresBoxes"></div>
 
-        <div style="position: absolute; right: 10px; top: 10px;"><input type="button" value="Запуск" id="run"/></div>
-        <div style="position: absolute; left: 10px; top: 10px;"><input type="button" value="Расставить автоматически" id="run2"/></div>
-
-        <div class="status"><b>Статус</b><div id="status">Расстановка фигур<br /><small>Перетащите нужные фигуры на поле.</small></div></div>
+        <div class="status"><b>Статус</b><div id="status"></div></div>
         
         <div class="fadePage"></div>
         <div class="history">

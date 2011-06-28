@@ -48,7 +48,7 @@ function init () {
 }
 
 function run() {
-    if ($("#figuresBoxes>.figure[piece=king]").length > 0 || $("#figuresBoxes>.figure[piece=KING]").length > 0) {
+    if ($("#figuresBoxes>.figure[alt=king]").length > 0 || $("#figuresBoxes>.figure[alt=KING]").length > 0) {
         alert("Оба короля должны быть на доске");
         return false;
     }
@@ -166,7 +166,7 @@ var Figures = function () {
         }
         
         // берем тип фигуры
-        var figureType = $(figureDom).attr("piece");
+        var figureType = $(figureDom).attr("alt");
         
         // если фигура добавлена на доску
         if ($(toDom).hasClass("cell")) {
@@ -175,10 +175,10 @@ var Figures = function () {
             if ($(toDom).children(".figure").length > 0) {
                 if (inGame) {
                     // фигура убита
-                    $(".killed").append($(toDom).children(".figure").attr("style", "position: relative;"));                    
+                    $(".killed").append($(toDom).children(".figure").attr("style", "position: altative;"));                    
                 } else {
                     // переносим в ящик с фигурами
-                    $("#figuresBoxes").append($(toDom).children(".figure").attr("style", "position: relative;"));
+                    $("#figuresBoxes").append($(toDom).children(".figure").attr("style", "position: altative;"));
                 }                
             }
             
@@ -188,7 +188,7 @@ var Figures = function () {
         } else {
             // если убрали фугуру в коробку
             $(toDom).append(figureDom);
-            $(figureDom).attr("style", "position: relative;");
+            $(figureDom).attr("style", "position: altative;");
         }
         this.draw();
     }
@@ -232,7 +232,7 @@ var Figures = function () {
                         clas = "white"
                     } 
                     clas = clas + " figure ";
-                    var temp = "<img class='" + clas + "' src='"+ imagesSrc[this.board[i][j]]+"' piece='" + this.board[i][j] + "'/>";
+                    var temp = "<img class='" + clas + "' src='"+ imagesSrc[this.board[i][j]]+"' alt='" + this.board[i][j] + "'/>";
                     $("#cell"+i.toString()+j.toString()).html(temp);
                 }
             }
@@ -486,7 +486,7 @@ function check(figures, board) {
                 }
             }
         }
-        var yxKing = $(".cell>.figure[piece=king]").parent().attr("id");
+        var yxKing = $(".cell>.figure[alt=king]").parent().attr("id");
         if (board.board[yxKing.charAt(4)][yxKing.charAt(5)] > 0) {
             info.setText("Шах черным!<br />");
             isCheck = true;
@@ -502,7 +502,7 @@ function check(figures, board) {
                 }
             }
         }
-        yxKing = $(".cell>.figure[piece=KING]").parent().attr("id");
+        yxKing = $(".cell>.figure[alt=KING]").parent().attr("id");
         if (board.board[yxKing.charAt(4)][yxKing.charAt(5)] > 0) {
             info.setText("Шах белым!<br />");
             isCheck = true;
